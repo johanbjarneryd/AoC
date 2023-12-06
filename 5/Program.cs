@@ -41,26 +41,13 @@ namespace _5
 
         private static void SecondStar()
         {
-            IList<Seed> seedList = new List<Seed>();
+            //IList<Seed> seedList = new List<Seed>();
+            Seed workSeed = new Seed(0);
             var inData = ReadInput();
+            long? location = null;
 
             var seeds = inData[0].Split(':')[1].Trim().Split(' ');
-            for (long i = 0; i < seeds.Length; i++)
-            {
-                long start = Convert.ToInt64(seeds[i]);
-                long stop = start + Convert.ToInt64(seeds[i + 1]);
-                long seedIdAdd = 0;
-                for (long j = start; j < stop; j++)
-                {
-                    seedList.Add(new Seed(Convert.ToInt64(start + seedIdAdd)));
-                    seedIdAdd++;
-                }
-                i++;
-            }
-            //foreach (var seed in seeds)
-            //{
-            //    seedList.Add(new Seed(Convert.ToInt64(seed)));
-            //}
+
             var seedToSoilMap = GetMap(inData, "seed-to-soil map:");
             var soilToFertilizerMap = GetMap(inData, "soil-to-fertilizer map:");
             var fertilizerToWaterMap = GetMap(inData, "fertilizer-to-water map:");
@@ -68,16 +55,34 @@ namespace _5
             var lightToTemperatureMap = GetMap(inData, "light-to-temperature map:");
             var temperatureToHumidityMap = GetMap(inData, "temperature-to-humidity map:");
             var humidityToLocationMap = GetMap(inData, "humidity-to-location map:");
+            workSeed.SetMaps(seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap);
 
-            foreach (var seed in seedList)
+            for (long i = 0; i < seeds.Length; i++)
             {
-                seed.Map(seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap);
-                //Console.WriteLine($"{seed.SeedId} - {seed.SoilId} -{seed.FertilizerId}  -  {seed.WaterId} - {seed.LightId} - {seed.TemperatureId} - {seed.HumidityId} -  {seed.LocationId}");
+                long start = Convert.ToInt64(seeds[i]);
+                long stop = start + Convert.ToInt64(seeds[i + 1]);
+                long seedIdAdd = 0;
+                for (long j = start; j < stop; j++)
+                {
+                    workSeed.Reset(start + seedIdAdd);
+                    var loc = workSeed.GetLocation();
+                    if(!location.HasValue)
+                    {
+                        location = loc;
+                    }
+                    else
+                    {
+                        if(loc < location)
+                        {
+                            location = loc;
+                        }
+                    }                    
+                    seedIdAdd++;
+                }
+                i++;
             }
 
-            var item = seedList.OrderBy(x => x.LocationId).First();
-
-            Console.WriteLine(item.LocationId);
+            Console.WriteLine(location);
         }
 
         private static IList<InterVal> GetMap(IList<string> input, string delimiter)
