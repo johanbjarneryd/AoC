@@ -44,7 +44,7 @@ namespace _5
             //IList<Seed> seedList = new List<Seed>();
             Seed workSeed = new Seed(0);
             var inData = ReadInput();
-            long? location = null;
+            long location = long.MaxValue;
 
             var seeds = inData[0].Split(':')[1].Trim().Split(' ');
 
@@ -59,25 +59,23 @@ namespace _5
 
             for (long i = 0; i < seeds.Length; i++)
             {
+                
                 long start = Convert.ToInt64(seeds[i]);
                 long stop = start + Convert.ToInt64(seeds[i + 1]);
+                Console.WriteLine("Seedbatch # " + i);
+                Console.WriteLine("Start # " + start);
+                Console.WriteLine("Stop # " + stop);
                 long seedIdAdd = 0;
                 for (long j = start; j < stop; j++)
                 {
                     workSeed.Reset(start + seedIdAdd);
                     var loc = workSeed.GetLocation();
-                    if(!location.HasValue)
-                    {
-                        location = loc;
-                    }
-                    else
-                    {
-                        if(loc < location)
-                        {
-                            location = loc;
-                        }
-                    }                    
+                    location = Math.Min(loc, location);                 
                     seedIdAdd++;
+                    if(j % 300000 ==0)
+                    {
+                        Console.WriteLine($"Row {j} and location = {location}");
+                    }
                 }
                 i++;
             }
@@ -87,6 +85,7 @@ namespace _5
 
         private static IList<InterVal> GetMap(IList<string> input, string delimiter)
         {
+            Console.WriteLine("Creating map for " + delimiter);
             var list = new List<InterVal>();
             var index = GetLineIndex(input, delimiter);
             for (int i = index + 1; i < input.Count; i++)
