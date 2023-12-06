@@ -59,7 +59,7 @@ namespace _5
 
             for (long i = 0; i < seeds.Length; i++)
             {
-                
+
                 long start = Convert.ToInt64(seeds[i]);
                 long stop = start + Convert.ToInt64(seeds[i + 1]);
                 Console.WriteLine("Seedbatch # " + i);
@@ -70,9 +70,9 @@ namespace _5
                 {
                     workSeed.Reset(start + seedIdAdd);
                     var loc = workSeed.GetLocation();
-                    location = Math.Min(loc, location);                 
+                    location = Math.Min(loc, location);
                     seedIdAdd++;
-                    if(j % 300000 ==0)
+                    if (j % 300000 == 0)
                     {
                         Console.WriteLine($"Row {j} and location = {location}");
                     }
