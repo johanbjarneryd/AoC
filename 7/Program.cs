@@ -79,9 +79,9 @@ namespace _7
 
         private static IList<Hand> SortHands(IList<Hand> hands, IDictionary<char, int> map)
         {
-            return hands.OrderByDescending(x => x.FirstCardValue).ThenByDescending(x => x.SecondCardValue)
-                        .ThenByDescending(x => x.ThirdCardValue).ThenByDescending(x => x.FourthCardValue)
-                        .ThenByDescending(x => x.FiftCardValue).ToList();
+            return hands.OrderByDescending(x => x.Cards[0]).ThenByDescending(x => x.Cards[1])
+                        .ThenByDescending(x => x.Cards[2]).ThenByDescending(x => x.Cards[3])
+                        .ThenByDescending(x => x.Cards[4]).ToList();
             //if (hands.Count <= 1)
             //{
             //    return hands;
@@ -125,11 +125,13 @@ namespace _7
     public class Hand
     {
         private IDictionary<char, int> _map;
+        private IDictionary<int, char> _stringMap;
         public Hand(IDictionary<char, int> map)
         {
             _map = map;
         }
         public string Cards { get; private set; }
+        public string DummyCards { get; private set; }
         public int Bid { get; set; }
         public int HandValue { get; set; }
 
@@ -139,6 +141,12 @@ namespace _7
         public int FourthCardValue { get; set; }
         public int FiftCardValue { get; set; }
 
+        public string FirstCardCValue { get; set; }
+        public string SecondCardCValue { get; set; }
+        public string ThirdCardCValue { get; set; }
+        public string FourthCardCValue { get; set; }
+        public string FiftCardCValue { get; set; }
+
         public void SetCards(string hand)
         {
             Cards = hand;
@@ -147,6 +155,9 @@ namespace _7
             ThirdCardValue = char.IsDigit(hand[2]) ? Convert.ToInt32(hand[2]) : _map[hand[2]];
             FourthCardValue = char.IsDigit(hand[3]) ? Convert.ToInt32(hand[3]) : _map[hand[3]];
             FiftCardValue = char.IsDigit(hand[4]) ? Convert.ToInt32(hand[4]) : _map[hand[4]];
+
+                
+            DummyCards = $"{FirstCardCValue}{SecondCardCValue}{ThirdCardCValue}{FourthCardCValue}{FiftCardCValue}";
         }
 
         public IList<IGrouping<char, char>> Groups { get; set; }

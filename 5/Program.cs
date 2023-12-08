@@ -41,12 +41,10 @@ namespace _5
 
         private static void SecondStar()
         {
-            //IList<Seed> seedList = new List<Seed>();
-            Seed workSeed = new Seed(0);
             var inData = ReadInput();
-            long location = long.MaxValue;
+            //long location = long.MaxValue;
 
-            var seeds = inData[0].Split(':')[1].Trim().Split(' ');
+            var seeds = inData[0].Split(':')[1].Trim().Split(' ').Select(x => Convert.ToInt64(x)).ToList();
 
             var seedToSoilMap = GetMap(inData, "seed-to-soil map:");
             var soilToFertilizerMap = GetMap(inData, "soil-to-fertilizer map:");
@@ -55,32 +53,44 @@ namespace _5
             var lightToTemperatureMap = GetMap(inData, "light-to-temperature map:");
             var temperatureToHumidityMap = GetMap(inData, "temperature-to-humidity map:");
             var humidityToLocationMap = GetMap(inData, "humidity-to-location map:");
-            workSeed.SetMaps(seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap);
+            var workSeed = new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap);
 
-            for (long i = 0; i < seeds.Length; i++)
+            Task<long>[] taskArray = { Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[0],seeds[1])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[2],seeds[3])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[4],seeds[5])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[6],seeds[7])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[8],seeds[9])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[10],seeds[11])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[12],seeds[13])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[14],seeds[15])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[16],seeds[17])),
+                                     Task<long>.Factory.StartNew(() => ComputeLocation(new Seed(0, seedToSoilMap, soilToFertilizerMap, fertilizerToWaterMap, waterToLightMap, lightToTemperatureMap, temperatureToHumidityMap, humidityToLocationMap),seeds[18],seeds[19]))
+            };
+
+            Task.WaitAll(taskArray);
+            var results = new long[taskArray.Length];            
+            Console.WriteLine("done");
+        }
+
+        private static long ComputeLocation(Seed workSeed, long start, long stop)
+        {
+            long location = long.MaxValue;
+            stop = start + stop;
+            Console.WriteLine("Start # " + start);
+            Console.WriteLine("Stop # " + stop);
+            long seedIdAdd = 0;
+            for (long j = start; j < stop; j++)
             {
-
-                long start = Convert.ToInt64(seeds[i]);
-                long stop = start + Convert.ToInt64(seeds[i + 1]);
-                Console.WriteLine("Seedbatch # " + i);
-                Console.WriteLine("Start # " + start);
-                Console.WriteLine("Stop # " + stop);
-                long seedIdAdd = 0;
-                for (long j = start; j < stop; j++)
+                workSeed.Reset(start + seedIdAdd);
+                var loc = workSeed.GetLocation();
+                location = Math.Min(loc, location);
+                seedIdAdd++;
+                if (j % 400000 == 0)
                 {
-                    workSeed.Reset(start + seedIdAdd);
-                    var loc = workSeed.GetLocation();
-                    location = Math.Min(loc, location);
-                    seedIdAdd++;
-                    if (j % 300000 == 0)
-                    {
-                        Console.WriteLine($"Row {j} and location = {location}");
-                    }
+                    Console.WriteLine($"Row {j} and location = {location}");
                 }
-                i++;
             }
-
-            Console.WriteLine(location);
+            return location;
         }
 
         private static IList<InterVal> GetMap(IList<string> input, string delimiter)

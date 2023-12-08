@@ -14,6 +14,18 @@ namespace _5
             SeedId = id;
         }
 
+        public Seed(long id, IList<InterVal> seedToSoilMap, IList<InterVal> soilToFertilizerMap, IList<InterVal> fertilizerToWaterMap, IList<InterVal> waterToLightMap, IList<InterVal> lightToTemperatureMap, IList<InterVal> temperatureToHumidityMap, IList<InterVal> humidityToLocationMap) : this(id)
+        {
+            SeedId = id;
+            SeedToSoilMap = seedToSoilMap;
+            SoilToFertilizerMap = soilToFertilizerMap;
+            FertilizerToWaterMap = fertilizerToWaterMap;
+            WaterToLightMap = waterToLightMap;
+            LightToTemperatureMap = lightToTemperatureMap;
+            TemperatureToHumidityMap = temperatureToHumidityMap;
+            HumidityToLocationMap = humidityToLocationMap;
+        }
+
         public long SeedId { get; set; }
         public long SoilId { get; set; }
         public long WaterId { get; set; }
@@ -25,11 +37,11 @@ namespace _5
 
         private IList<InterVal> SeedToSoilMap { get; set; }
         private IList<InterVal> SoilToFertilizerMap { get; set; }
-        private IList<InterVal> SertilizerToWaterMap { get; set; }
         private IList<InterVal> WaterToLightMap { get; set; }
         private IList<InterVal> LightToTemperatureMap { get; set; }
         private IList<InterVal> TemperatureToHumidityMap { get; set; }
         private IList<InterVal> HumidityToLocationMap { get; set; }
+        public IList<InterVal> FertilizerToWaterMap { get; set; }
 
         public void Reset(long seedId)
         {
@@ -60,7 +72,7 @@ namespace _5
         {
             SeedToSoilMap = seedToSoilMap;
             SoilToFertilizerMap = soilToFertilizerMap;
-            SertilizerToWaterMap = fertilizerToWaterMap;
+            FertilizerToWaterMap = fertilizerToWaterMap;
             WaterToLightMap = waterToLightMap;
             LightToTemperatureMap = lightToTemperatureMap;
             TemperatureToHumidityMap = temperatureToHumidityMap;
@@ -71,7 +83,7 @@ namespace _5
         {
             SoilId = GetValue(SeedToSoilMap, SeedId);
             FertilizerId = GetValue(SoilToFertilizerMap, SoilId);
-            WaterId = GetValue(SertilizerToWaterMap, FertilizerId);
+            WaterId = GetValue(FertilizerToWaterMap, FertilizerId);
             LightId = GetValue(WaterToLightMap, WaterId);
             TemperatureId = GetValue(LightToTemperatureMap, LightId);
             HumidityId = GetValue(TemperatureToHumidityMap, TemperatureId);
