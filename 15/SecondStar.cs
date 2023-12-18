@@ -27,28 +27,22 @@ namespace _15
 
         public void RunSecondStar()
         {
-            Console.WriteLine(calculator.Calculate("rn"));
-            Console.WriteLine(calculator.Calculate("rn 1"));
-            Console.WriteLine(calculator.Calculate("rn=1"));
             foreach (var inputSequence in input)
             {
                 if (inputSequence.Contains('='))
                 {
                     var splitVals = inputSequence.Split('=');
-                    var lensId = inputSequence.Replace('=', ' ');//calculator.Calculate(splitVals[0]);
                     var box = GetBox(splitVals[0]);
                     box.AddLens(splitVals[0], Convert.ToInt32(splitVals[1]));
                 }
                 else
                 {
                     var splitVals = inputSequence.Split('-');
-                    var lensId = inputSequence.Replace('-', ' ');//calculator.Calculate(inputSequence.Substring(0, inputSequence.Length - 1));
                     var box = GetBox(splitVals[0]);
                     box.RemoveLens(splitVals[0]);
                 }
             }
             int result = 0;
-            //var calcBoxes = boxes.Where(x => x.Lenses.Count > 0).ToArray();
             for(int i =0;i<boxes.Count;i++)
             {
                 result += boxes[i].CalculateResult();
